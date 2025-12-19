@@ -14,10 +14,10 @@ import {
 } from 'lucide-react';
 
 const INITIAL_REQUESTS = [
-    { id: '#402', title: 'Materiais de Arte', requester: 'Prof. Carlos Eduardo', time: 'Há 2 horas', price: 350.00, status: 'Pendentes', icon: '🎨', color: '#818cf8', category: 'Materiais', date: '24 Out, 2025 às 09:30', items: [{ name: 'Kit Tinta Acrílica', qty: 5, total: 200 }, { name: 'Pincéis variados', qty: 10, total: 100 }, { name: 'Papel Canson A3', qty: 2, total: 50 }], justification: 'Necessário para as aulas práticas de pintura com as turmas do 6º e 7º ano...' },
-    { id: '#401', title: 'Manutenção Lab. Informática', requester: 'Coord. João Paulo', time: 'Há 4 horas', price: 1200.00, status: 'Em andamento', icon: '💻', color: '#34d399', category: 'Serviços', date: '24 Out, 2025 às 08:15', items: [{ name: 'Manutenção Preventiva', qty: 1, total: 1200 }], justification: 'Vários computadores apresentando lentidão e necessidade de limpeza.' },
-    { id: '#399', title: 'Livros Didáticos 2º Ano', requester: 'Biblio. Helena', time: 'Ontem', price: 890.50, status: 'Pendentes', icon: '📚', color: '#a78bfa', category: 'Materiais', date: '23 Out, 2025 às 14:00', items: [{ name: 'Coleção Português', qty: 10, total: 500 }, { name: 'Coleção Matemática', qty: 8, total: 390.50 }], justification: 'Reposição de estoque para o próximo semestre.' },
-    { id: '#398', title: 'Bolas de Futebol', requester: 'Prof. Roberto', time: 'Ontem', price: 150.00, status: 'Concluída', icon: '⚽', color: '#60a5fa', category: 'Materiais', date: '23 Out, 2025 às 10:30', items: [{ name: 'Bolas de Couro', qty: 3, total: 150 }], justification: 'Bolas antigas furadas.' },
+    { id: '#402', title: 'Materiais de Arte', requester: 'Prof. Carlos Eduardo', time: 'Há 2 horas', price: 350.00, status: 'Pendentes', icon: '🎨', color: '#818cf8', category: 'Materiais', date: '24 Out, 2025 às 09:30', items: [{ name: 'Kit Tinta Acrílica', qty: 5, total: 200 }, { name: 'Pincéis variados', qty: 10, total: 100 }, { name: 'Papel Canson A3', qty: 2, total: 50 }], justification: 'Necessário para as aulas práticas de pintura com as turmas do 6º e 7º ano...', urgency: 'Média' },
+    { id: '#401', title: 'Manutenção Lab. Informática', requester: 'Coord. João Paulo', time: 'Há 4 horas', price: 1200.00, status: 'Em andamento', icon: '💻', color: '#34d399', category: 'Serviços', date: '24 Out, 2025 às 08:15', items: [{ name: 'Manutenção Preventiva', qty: 1, total: 1200 }], justification: 'Vários computadores apresentando lentidão e necessidade de limpeza.', urgency: 'Alta' },
+    { id: '#399', title: 'Livros Didáticos 2º Ano', requester: 'Biblio. Helena', time: 'Ontem', price: 890.50, status: 'Pendentes', icon: '📚', color: '#a78bfa', category: 'Materiais', date: '23 Out, 2025 às 14:00', items: [{ name: 'Coleção Português', qty: 10, total: 500 }, { name: 'Coleção Matemática', qty: 8, total: 390.50 }], justification: 'Reposição de estoque para o próximo semestre.', urgency: 'Baixa' },
+    { id: '#398', title: 'Bolas de Futebol', requester: 'Prof. Roberto', time: 'Ontem', price: 150.00, status: 'Concluída', icon: '⚽', color: '#60a5fa', category: 'Materiais', date: '23 Out, 2025 às 10:30', items: [{ name: 'Bolas de Couro', qty: 3, total: 150 }], justification: 'Bolas antigas furadas.', urgency: 'Baixa' },
 ];
 
 const AdminDashboard = () => {
@@ -199,7 +199,20 @@ const AdminDashboard = () => {
                             </div>
 
                             <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>Solicitação {selectedRequest.id}</h3>
-                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Criado em {selectedRequest.date}</p>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Criado em {selectedRequest.date}</p>
+                                <span style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 700,
+                                    color: selectedRequest.urgency === 'Alta' ? '#dc2626' : selectedRequest.urgency === 'Média' ? '#d97706' : '#16a34a',
+                                    background: selectedRequest.urgency === 'Alta' ? '#fee2e2' : selectedRequest.urgency === 'Média' ? '#fef3c7' : '#dcfce7',
+                                    padding: '0.25rem 0.6rem',
+                                    borderRadius: '4px',
+                                    textTransform: 'uppercase'
+                                }}>
+                                    {selectedRequest.urgency}
+                                </span>
+                            </div>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
                                 <img src={`https://ui-avatars.com/api/?name=${selectedRequest.requester.replace('Prof. ', '').replace('Coord. ', '').replace('Biblio. ', '')}&background=${selectedRequest.color.replace('#', '')}&color=fff`} alt="Requester" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />

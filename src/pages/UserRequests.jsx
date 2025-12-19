@@ -25,11 +25,11 @@ const UserRequests = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [allRequests, setAllRequests] = useState([
-        { id: '#REQ-2023-001', title: 'Compra de Projetores - Sala 3', type: 'Material', date: '24/10/2023', status: 'Pendentes', icon: <Laptop size={18} />, color: '#3b82f6', category: 'Equipamentos', price: 2500, description: 'Necessário para renovação das salas de aula.' },
-        { id: '#REQ-2023-045', title: 'Reparo Ar Condicionado - Biblioteca', type: 'Serviço', date: '20/10/2023', status: 'Concluída', icon: <Wrench size={18} />, color: '#f59e0b', category: 'Serviços', price: 450, description: 'Manutenção periódica.' },
-        { id: '#REQ-2023-032', title: 'Livros Didáticos 5º Ano', type: 'Material', date: '18/10/2023', status: 'Rejeitada', icon: <Book size={18} />, color: '#3b82f6', category: 'Material Pedagógico', price: 890, description: 'Livros para a biblioteca.' },
-        { id: '#REQ-2023-018', title: 'Material de Limpeza - Estoque', type: 'Material', date: '15/10/2023', status: 'Concluída', icon: <Info size={18} />, color: '#3b82f6', category: 'Infraestrutura', price: 200, description: 'Reposição mensal.' },
-        { id: '#REQ-2023-012', title: 'Manutenção Elétrica - Quadra', type: 'Serviço', date: '10/10/2023', status: 'Em andamento', icon: <PenTool size={18} />, color: '#f59e0b', category: 'Serviços', price: 1200, description: 'Troca de fiação e lâmpadas.' },
+        { id: '#REQ-2023-001', title: 'Compra de Projetores - Sala 3', type: 'Material', date: '24/10/2023', status: 'Pendentes', icon: <Laptop size={18} />, color: '#3b82f6', category: 'Equipamentos', price: 2500, description: 'Necessário para renovação das salas de aula.', urgency: 'Alta' },
+        { id: '#REQ-2023-045', title: 'Reparo Ar Condicionado - Biblioteca', type: 'Serviço', date: '20/10/2023', status: 'Concluída', icon: <Wrench size={18} />, color: '#f59e0b', category: 'Serviços', price: 450, description: 'Manutenção periódica.', urgency: 'Média' },
+        { id: '#REQ-2023-032', title: 'Livros Didáticos 5º Ano', type: 'Material', date: '18/10/2023', status: 'Rejeitada', icon: <Book size={18} />, color: '#3b82f6', category: 'Material Pedagógico', price: 890, description: 'Livros para a biblioteca.', urgency: 'Baixa' },
+        { id: '#REQ-2023-018', title: 'Material de Limpeza - Estoque', type: 'Material', date: '15/10/2023', status: 'Concluída', icon: <Info size={18} />, color: '#3b82f6', category: 'Infraestrutura', price: 200, description: 'Reposição mensal.', urgency: 'Baixa' },
+        { id: '#REQ-2023-012', title: 'Manutenção Elétrica - Quadra', type: 'Serviço', date: '10/10/2023', status: 'Em andamento', icon: <PenTool size={18} />, color: '#f59e0b', category: 'Serviços', price: 1200, description: 'Troca de fiação e lâmpadas.', urgency: 'Alta' },
     ]);
 
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -61,7 +61,8 @@ const UserRequests = () => {
             color: '#3b82f6',
             category: data.category,
             price: data.price,
-            description: data.description
+            description: data.description,
+            urgency: data.urgency
         };
         setAllRequests([newReq, ...allRequests]);
         setIsFormOpen(false);
@@ -303,6 +304,18 @@ const UserRequests = () => {
                             <div>
                                 <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Categoria</p>
                                 <p style={{ fontWeight: 600 }}>{selectedRequest.category}</p>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Urgência</p>
+                                <p style={{
+                                    fontWeight: 700,
+                                    color: selectedRequest.urgency === 'Alta' ? '#dc2626' : selectedRequest.urgency === 'Média' ? '#d97706' : '#16a34a',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.25rem'
+                                }}>
+                                    {selectedRequest.urgency === 'Alta' ? '🔴' : selectedRequest.urgency === 'Média' ? '🟡' : '🟢'} {selectedRequest.urgency}
+                                </p>
                             </div>
                         </div>
 

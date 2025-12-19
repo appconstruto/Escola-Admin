@@ -7,7 +7,8 @@ const RequestForm = ({ onSubmit, onCancel }) => {
         category: 'Material de Escritório',
         requester: 'Coordenação',
         price: '',
-        description: ''
+        description: '',
+        urgency: 'Baixa'
     });
 
     const handleSubmit = (e) => {
@@ -70,6 +71,19 @@ const RequestForm = ({ onSubmit, onCancel }) => {
                         value={formData.price}
                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     />
+                </div>
+
+                <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 600 }}>Urgência</label>
+                    <select
+                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '1rem' }}
+                        value={formData.urgency}
+                        onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
+                    >
+                        <option value="Baixa">🟢 Baixa</option>
+                        <option value="Média">🟡 Média</option>
+                        <option value="Alta">🔴 Alta</option>
+                    </select>
                 </div>
 
                 <div style={{ gridColumn: 'span 2' }}>
