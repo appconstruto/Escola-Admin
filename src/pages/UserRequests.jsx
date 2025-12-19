@@ -11,20 +11,31 @@ import {
     Laptop,
     Book,
     Wrench,
-    Trash2
+    Trash2,
+    X,
+    Send,
+    CheckCircle,
+    Clock,
+    AlertCircle
 } from 'lucide-react';
+import RequestForm from '../components/RequestForm';
 
 const UserRequests = () => {
     const [filter, setFilter] = useState('Todos');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const allRequests = [
-        { id: '#REQ-2023-001', title: 'Compra de Projetores - Sala 3', type: 'Material', date: '24/10/2023', status: 'Pendentes', icon: <Laptop size={18} />, color: '#3b82f6' },
-        { id: '#REQ-2023-045', title: 'Reparo Ar Condicionado - Biblioteca', type: 'Serviço', date: '20/10/2023', status: 'Concluída', icon: <Wrench size={18} />, color: '#f59e0b' },
-        { id: '#REQ-2023-032', title: 'Livros Didáticos 5º Ano', type: 'Material', date: '18/10/2023', status: 'Rejeitada', icon: <Book size={18} />, color: '#3b82f6' },
-        { id: '#REQ-2023-018', title: 'Material de Limpeza - Estoque', type: 'Material', date: '15/10/2023', status: 'Concluída', icon: <Info size={18} />, color: '#3b82f6' },
-        { id: '#REQ-2023-012', title: 'Manutenção Elétrica - Quadra', type: 'Serviço', date: '10/10/2023', status: 'Em andamento', icon: <PenTool size={18} />, color: '#f59e0b' },
-    ];
+    const [allRequests, setAllRequests] = useState([
+        { id: '#REQ-2023-001', title: 'Compra de Projetores - Sala 3', type: 'Material', date: '24/10/2023', status: 'Pendentes', icon: <Laptop size={18} />, color: '#3b82f6', category: 'Equipamentos', price: 2500, description: 'Necessário para renovação das salas de aula.' },
+        { id: '#REQ-2023-045', title: 'Reparo Ar Condicionado - Biblioteca', type: 'Serviço', date: '20/10/2023', status: 'Concluída', icon: <Wrench size={18} />, color: '#f59e0b', category: 'Serviços', price: 450, description: 'Manutenção periódica.' },
+        { id: '#REQ-2023-032', title: 'Livros Didáticos 5º Ano', type: 'Material', date: '18/10/2023', status: 'Rejeitada', icon: <Book size={18} />, color: '#3b82f6', category: 'Material Pedagógico', price: 890, description: 'Livros para a biblioteca.' },
+        { id: '#REQ-2023-018', title: 'Material de Limpeza - Estoque', type: 'Material', date: '15/10/2023', status: 'Concluída', icon: <Info size={18} />, color: '#3b82f6', category: 'Infraestrutura', price: 200, description: 'Reposição mensal.' },
+        { id: '#REQ-2023-012', title: 'Manutenção Elétrica - Quadra', type: 'Serviço', date: '10/10/2023', status: 'Em andamento', icon: <PenTool size={18} />, color: '#f59e0b', category: 'Serviços', price: 1200, description: 'Troca de fiação e lâmpadas.' },
+    ]);
+
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
     const filteredRequests = allRequests.filter(req => {
         const matchesFilter = filter === 'Todos' || req.status === filter;
@@ -32,6 +43,29 @@ const UserRequests = () => {
             req.id.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesFilter && matchesSearch;
     });
+
+    const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+    const paginatedRequests = filteredRequests.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const handleNewRequest = (data) => {
+        const newReq = {
+            id: `#REQ-${new Date().getFullYear()}-${Math.floor(Math.random() * 900) + 100}`,
+            title: data.title,
+            type: data.category === 'Serviços' ? 'Serviço' : 'Material',
+            date: new Date().toLocaleDateString('pt-BR'),
+            status: 'Pendentes',
+            icon: data.category === 'Serviços' ? <PenTool size={18} /> : <Laptop size={18} />,
+            color: '#3b82f6',
+            category: data.category,
+            price: data.price,
+            description: data.description
+        };
+        setAllRequests([newReq, ...allRequests]);
+        setIsFormOpen(false);
+    };
 
     const getStatusStyle = (status) => {
         switch (status) {
@@ -53,7 +87,7 @@ const UserRequests = () => {
                         <h1 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>Minhas Solicitações</h1>
                         <p style={{ color: 'var(--text-muted)' }}>Gerencie suas solicitações de compra e serviços escolares.</p>
                     </div>
-                    <button className="btn btn-primary" onClick={() => alert('Abrir formulário de nova solicitação')} style={{ padding: '0.875rem 1.5rem', fontSize: '1rem' }}>
+                    <button className="btn btn-primary" onClick={() => setIsFormOpen(true)} style={{ padding: '0.875rem 1.5rem', fontSize: '1rem' }}>
                         <Plus size={20} /> Nova Solicitação
                     </button>
                 </header>
@@ -112,7 +146,7 @@ const UserRequests = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredRequests.map((req, i) => (
+                                {paginatedRequests.map((req, i) => (
                                     <tr key={i} style={{ borderBottom: '1px solid var(--border)', background: 'white' }}>
                                         <td style={{ padding: '1.5rem 2rem' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -150,7 +184,7 @@ const UserRequests = () => {
                                         <td style={{ padding: '1.5rem 2rem' }}>
                                             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                                                 <button onClick={() => alert(`Editar ${req.id}`)} style={{ border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><PenTool size={18} /></button>
-                                                <button onClick={() => alert(`Visualizar ${req.id}`)} style={{ border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><Eye size={18} /></button>
+                                                <button onClick={() => setSelectedRequest(req)} style={{ border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><Eye size={18} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -161,18 +195,124 @@ const UserRequests = () => {
 
                     {/* Pagination */}
                     <div style={{ padding: '1.25rem 2rem', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Mostrando 1 a {filteredRequests.length} de {allRequests.length} resultados</p>
+                        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                            Mostrando {filteredRequests.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} a {Math.min(currentPage * itemsPerPage, filteredRequests.length)} de {filteredRequests.length} resultados
+                        </p>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button className="btn" style={{ padding: '0.5rem 0.75rem', background: 'white', border: '1px solid var(--border)', cursor: 'pointer' }}>&lt;</button>
-                            <button className="btn" style={{ padding: '0.5rem 1rem', background: 'var(--primary)', color: 'white', border: 'none', cursor: 'pointer' }}>1</button>
-                            <button className="btn" style={{ padding: '0.5rem 1rem', background: 'white', border: '1px solid var(--border)', cursor: 'pointer' }}>2</button>
-                            <button className="btn" style={{ padding: '0.5rem 1rem', background: 'white', border: '1px solid var(--border)', cursor: 'pointer' }}>3</button>
-                            <span style={{ alignSelf: 'center', color: 'var(--text-muted)' }}>...</span>
-                            <button className="btn" style={{ padding: '0.5rem 0.75rem', background: 'white', border: '1px solid var(--border)', cursor: 'pointer' }}>&gt;</button>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="btn"
+                                style={{ padding: '0.5rem 0.75rem', background: 'white', border: '1px solid var(--border)', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', opacity: currentPage === 1 ? 0.5 : 1 }}
+                            >
+                                &lt;
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className="btn"
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        background: currentPage === i + 1 ? 'var(--primary)' : 'white',
+                                        color: currentPage === i + 1 ? 'white' : 'var(--text-main)',
+                                        border: currentPage === i + 1 ? 'none' : '1px solid var(--border)',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className="btn"
+                                style={{ padding: '0.5rem 0.75rem', background: 'white', border: '1px solid var(--border)', cursor: (currentPage === totalPages || totalPages === 0) ? 'not-allowed' : 'pointer', opacity: (currentPage === totalPages || totalPages === 0) ? 0.5 : 1 }}
+                            >
+                                &gt;
+                            </button>
                         </div>
                     </div>
                 </section>
             </main>
+
+            {/* Modal: New Request */}
+            {isFormOpen && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '2rem' }}>
+                    <div style={{ width: '100%', maxWidth: '800px' }}>
+                        <RequestForm
+                            onSubmit={handleNewRequest}
+                            onCancel={() => setIsFormOpen(false)}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Modal: Request Details */}
+            {selectedRequest && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '2rem' }}>
+                    <div className="glass" style={{ width: '100%', maxWidth: '600px', padding: '2.5rem', position: 'relative', background: 'white', borderRadius: '24px' }}>
+                        <button
+                            onClick={() => setSelectedRequest(null)}
+                            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                        >
+                            <X size={24} />
+                        </button>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                            <div style={{ padding: '0.75rem', background: '#eff6ff', color: 'var(--primary)', borderRadius: '12px' }}>
+                                {selectedRequest.icon}
+                            </div>
+                            <div>
+                                <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>{selectedRequest.title}</h1>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>ID: {selectedRequest.id}</p>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                            <div>
+                                <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Status Atual</p>
+                                <span style={{
+                                    padding: '0.4rem 1rem',
+                                    borderRadius: '99px',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 700,
+                                    backgroundColor: getStatusStyle(selectedRequest.status).bg,
+                                    color: getStatusStyle(selectedRequest.status).color,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}>
+                                    {selectedRequest.status === 'Pendentes' && <Clock size={14} />}
+                                    {selectedRequest.status === 'Concluída' && <CheckCircle size={14} />}
+                                    {selectedRequest.status === 'Em andamento' && <Clock size={14} />}
+                                    {selectedRequest.status === 'Rejeitada' && <AlertCircle size={14} />}
+                                    {selectedRequest.status}
+                                </span>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Valor Estimado</p>
+                                <p style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>
+                                    R$ {selectedRequest.price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </p>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Data do Pedido</p>
+                                <p style={{ fontWeight: 600 }}>{selectedRequest.date}</p>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Categoria</p>
+                                <p style={{ fontWeight: 600 }}>{selectedRequest.category}</p>
+                            </div>
+                        </div>
+
+                        <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px' }}>
+                            <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>Justificativa</p>
+                            <p style={{ fontSize: '0.95rem', color: '#334155', lineHeight: 1.6 }}>{selectedRequest.description}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
